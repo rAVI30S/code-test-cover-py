@@ -39,5 +39,6 @@ def generate_soundex(name):
     return soundex
 
 # Example usage
-name = "Example"
-print(f"Soundex code for {name}: {generate_soundex(name)}")
+if __name__ == "__main__":
+    name = "Example"
+    print(f"Soundex code for {name}: {generate_soundex(name)}")
