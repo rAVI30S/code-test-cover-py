@@ -10,24 +10,34 @@ def get_soundex_code(c):
     }
     return mapping.get(c, '0')  # Default to '0' for non-mapped characters
 
+def remove_non_initial_vowels(name):
+    vowels = "AEIOUYHW"
+    return name[0] + ''.join(c for c in name[1:] if c.upper() not in vowels)
+
+def encode(name):
+    return ''.join(get_soundex_code(c) for c in name)
+
+def remove_consecutive_duplicates(encoded_name):
+    result = [encoded_name[0]]
+    for i in range(1, len(encoded_name)):
+        if encoded_name[i] != encoded_name[i - 1]:
+            result.append(encoded_name[i])
+    return ''.join(result)
 
 def generate_soundex(name):
-    if not name:
+    if not isinstance(name, str) or not name:
         return ""
-
-    # Start with the first letter (capitalized)
-    soundex = name[0].upper()
-    prev_code = get_soundex_code(soundex)
-
-    for char in name[1:]:
-        code = get_soundex_code(char)
-        if code != '0' and code != prev_code:
-            soundex += code
-            prev_code = code
-        if len(soundex) == 4:
-            break
-
-    # Pad with zeros if necessary
-    soundex = soundex.ljust(4, '0')
-
+    
+    name = name.upper()
+    name = remove_non_initial_vowels(name)
+    encoded_name = encode(name)
+    encoded_name = remove_consecutive_duplicates(encoded_name)
+    
+    # Retain the first letter and pad with zeros if necessary
+    soundex = name[0] + encoded_name[1:4].ljust(3, '0')
+    
     return soundex
+
+# Example usage
+name = "Example"
+print(f"Soundex code for {name}: {generate_soundex(name)}")
